@@ -1,0 +1,1 @@
+az aks enable-addons --resource-group myResourceGroup --name myAKSCluster --addons monitoring

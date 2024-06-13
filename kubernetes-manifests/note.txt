@@ -1,0 +1,7 @@
+ Kubernetes Setup
+a. Create an AKS Cluster
+
+Use Azure CLI or Azure Portal to create an AKS cluster with at least two nodes
+
+az aks create --resource-group myResourceGroup --name myAKSCluster --node-count 2 --enable-addons monitoring --generate-ssh-keys
+

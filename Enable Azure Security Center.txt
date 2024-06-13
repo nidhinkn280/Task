@@ -1,0 +1,1 @@
+az security auto-provisioning-setting update --name default --auto-provision "On"

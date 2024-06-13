@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product_service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product_service
+  template:
+    metadata:
+      labels:
+        app: product_service
+    spec:
+      containers:
+      - name: product_service
+        image: <ACR_NAME>.azurecr.io/product_service:latest
+        ports:
+        - containerPort: 5002

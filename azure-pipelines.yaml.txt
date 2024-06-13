@@ -1,0 +1,44 @@
+trigger:
+- main
+
+variables:
+  imageName: 'myapp'
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
+        addToPath: true
+
+    - script: |
+        docker build -t $(imageName):$(Build.BuildId) .
+        docker tag $(imageName):$(Build.BuildId) <ACR_NAME>.azurecr.io/$(imageName):$(Build.BuildId)
+      displayName: 'Build Docker image'
+
+    - script: |
+        echo $(ACR_PASSWORD) | docker login <ACR_NAME>.azurecr.io -u $(ACR_USERNAME) --password-stdin
+        docker push <ACR_NAME>.azurecr.io/$(imageName):$(Build.BuildId)
+      displayName: 'Push Docker image to ACR'
+
+- stage: Deploy
+  jobs:
+  - deployment: Deploy
+    environment: 'aks'
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+          - script: |
+              kubectl apply -f deployment.yaml
+              kubectl apply -f service.yaml
+              kubectl apply -f ingress.yaml
+            displayName: 'Deploy to AKS'
