@@ -1,7 +1,17 @@
+# Use the official Python base image
 FROM python:3.9-slim
-WORKDIR /app
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["python", "app.py"]
 
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the dependencies file to the working directory
+COPY requirements.txt .
+
+# Install any dependencies
+RUN pip install -r requirements.txt
+
+# Copy the rest of the application code to the working directory
+COPY . .
+
+# Command to run the application
+CMD ["python", "user_service.py"]
